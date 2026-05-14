@@ -16,6 +16,16 @@ pipeline {
             steps {
                 bat 'npm test || exit /b 0'
             }
+            post {
+                always {
+                    emailext(
+                        to: 'aaronkurian98975@gmail.com',
+                        subject: 'Jenkins - Run Tests Stage: ${BUILD_STATUS} - Build #${BUILD_NUMBER}',
+                        body: 'The Run Tests stage has completed with status: ${BUILD_STATUS}.\n\nCheck console output at ${BUILD_URL} to view the results.',
+                        attachLog: true
+                    )
+                }
+            }
         }
         stage('Generate Coverage Report') {
             steps {
@@ -25,6 +35,16 @@ pipeline {
         stage('NPM Audit (Security Scan)') {
             steps {
                 bat 'npm audit || exit /b 0'
+            }
+            post {
+                always {
+                    emailext(
+                        to: 'aaronkurian98975@gmail.com',
+                        subject: 'Jenkins - Security Scan Stage: ${BUILD_STATUS} - Build #${BUILD_NUMBER}',
+                        body: 'The NPM Audit Security Scan stage has completed with status: ${BUILD_STATUS}.\n\nCheck console output at ${BUILD_URL} to view the results.',
+                        attachLog: true
+                    )
+                }
             }
         }
     }
